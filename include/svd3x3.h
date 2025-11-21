@@ -51,8 +51,10 @@ void operator()(const TReal A[9], TReal U[9], TReal s[3], TReal V[9]) const
   if (scale) {
     // scale with the maximum absolute element of A
     scfac = std::fabs(At[0]);
-    for (int i = 1; i < 9; ++i)
-      if (std::fabs(At[i]) > scfac) scfac = std::fabs(At[i]);
+    for (int i = 1; i < 9; ++i) {
+      TReal x = std::fabs(At[i]);
+      scfac = (x > scfac) ? x : scfac;
+    }
     scfac = (scfac > 0) ? 1.0 / scfac : 1.0;
 
     At[0] *= scfac; At[1] *= scfac; At[2] *= scfac;
@@ -108,7 +110,7 @@ void operator()(const TReal A[9], TReal U[9], TReal s[3], TReal V[9]) const
 }
 
 // compute U*s*V' for verification
-inline void compose(const TReal U[9], const TReal s[3], const TReal V[9], TReal UsVt[9]) const
+inline void compose(const TReal U[9], const TReal s[3], const TReal V[9], TReal UsVt[9]) const noexcept
 {
   TReal sVt[9];
   sVt[0] = V[0]*s[0]; sVt[1] = V[3]*s[0]; sVt[2] = V[6]*s[0];
@@ -121,7 +123,7 @@ inline void compose(const TReal U[9], const TReal s[3], const TReal V[9], TReal 
 private:
 
 // A*B
-static inline void matmul3x3(const TReal *A, const TReal *B, TReal *prod)
+static inline void matmul3x3(const TReal *A, const TReal *B, TReal *prod) noexcept
 {
   prod[0] = A[0] * B[0] + A[1] * B[3] + A[2] * B[6];
   prod[1] = A[0] * B[1] + A[1] * B[4] + A[2] * B[7];
@@ -137,7 +139,7 @@ static inline void matmul3x3(const TReal *A, const TReal *B, TReal *prod)
 }
 
 // transpose in place
-static inline void mattransp3x3(TReal *A)
+static inline void mattransp3x3(TReal *A) noexcept
 {
   TReal tmp;
 
