@@ -4,7 +4,7 @@ The [singular value decomposition](https://en.wikipedia.org/wiki/Singular_value_
 This is a C++ implementation of SVD customized for 3x3 matrices.
 The SVD factors a 3x3 matrix $`M`$ as $`M = U S V^t`$ where $`U`$ and $`V`$ are orthogonal 3x3 matrices and $`S`$ is diagonal. 
 
-The decomposition is based on Nick Higham's [polar decomposition](https://github.com/martinbis11/polar-decomposition-3x3/tree/master) and David Eberly's [symmetric eigen solver](https://www.geometrictools.com/Documentation/RobustEigenSymmetric3x3.pdf) for 3x3 matrices.
+The decomposition is based on Nick Higham's [polar decomposition](https://github.com/martinbis11/polar-decomposition-3x3/tree/master) and David Eberly's [symmetric eigen solver](https://www.geometrictools.com/Documentation/RobustEigenSymmetric3x3.pdf) for 3x3 matrices. Alternatively, the latter can be substituted by an included 3x3 eigensolver which is based on [Jacobi rotations](https://en.wikipedia.org/wiki/Jacobi_rotation).
 
 The code is templated so that the decomposition can be computed either in single or double precision. To the best of my knowledge, this is the only fast 3x3 SVD in C++ with this feature; approaches such as that of [McAdams et al.](https://minds.wisconsin.edu/handle/1793/60736) provide single precision floating point only.
 
