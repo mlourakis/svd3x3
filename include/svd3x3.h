@@ -20,6 +20,15 @@
 #include "polar_decomposition_3x3.h"
 #include "SymmetricEigensolver3x3.h"
 
+// restricted pointers
+#if defined(__GNUC__) || defined(__clang__)
+#define SVD3x3_RESTRICT __restrict__
+#elif defined(_MSC_VER)
+#define SVD3x3_RESTRICT __restrict
+#else
+#define SVD3x3_RESTRICT
+#endif
+
 namespace svd3x3
 {
 
@@ -69,11 +78,11 @@ void operator()(const TReal A[9], TReal U[9], TReal s[3], TReal V[9]) const
   std::array<TReal, 3> eval;
   std::array<std::array<TReal, 3>, 3> evec;
 #if 1
-  gte::SymmetricEigensolver3x3<TReal> eig;
-  eig(H[0], H[1], H[2], H[4], H[5], H[8], false, -1, eval, evec); // decreasing order
-
+  // Eberly's noniterative/iterative 3x3 solver (uncomment accordingly); eigenvalues returned in decreasing order
+  gte::NISymmetricEigensolver3x3<TReal> {}(H[0], H[1], H[2], H[4], H[5], H[8], -1, eval, evec); // noniterative
+  //gte::SymmetricEigensolver3x3<TReal> {}(H[0], H[1], H[2], H[4], H[5], H[8], false, -1, eval, evec); // iterative
 #else
-  // alternative eigensolver not relying on Geometric Tools
+  // alternative eigensolver not relying on Eberly's Geometric Tools
   diagonalizer3x3_desc(H, &evec[0][0], &eval[0]);
 #endif
 
@@ -128,7 +137,7 @@ inline void compose(const TReal U[9], const TReal s[3], const TReal V[9], TReal 
 private:
 
 // A*B
-static inline void matmul3x3(const TReal *A, const TReal *B, TReal *prod) noexcept
+static inline void matmul3x3(const TReal * SVD3x3_RESTRICT A, const TReal * SVD3x3_RESTRICT B, TReal * SVD3x3_RESTRICT prod) noexcept
 {
   prod[0] = A[0] * B[0] + A[1] * B[3] + A[2] * B[6];
   prod[1] = A[0] * B[1] + A[1] * B[4] + A[2] * B[7];
